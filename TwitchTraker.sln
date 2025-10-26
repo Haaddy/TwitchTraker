@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTraker", "TwitchTraker\TwitchTraker.csproj", "{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiwtchTraker.BLL", "TiwtchTraker.BLL\TiwtchTraker.BLL.csproj", "{D44057E9-87F5-4D6A-BE76-1B621EECA291}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.DAL", "TwitchTracker.DAL\TwitchTracker.DAL.csproj", "{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D44057E9-87F5-4D6A-BE76-1B621EECA291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D44057E9-87F5-4D6A-BE76-1B621EECA291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D44057E9-87F5-4D6A-BE76-1B621EECA291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D44057E9-87F5-4D6A-BE76-1B621EECA291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
