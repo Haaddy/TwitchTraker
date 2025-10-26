@@ -1,12 +1,24 @@
-﻿<Window x:Class="TwitchTraker.MainWindow"
+﻿<Window x:Class="TwitchTracker.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TwitchTraker"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Twitch Tracker" Height="250" Width="400">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- текстовое поле + кнопка -->
+            <RowDefinition Height="Auto"/> <!-- lblName -->
+            <RowDefinition Height="Auto"/> <!-- lblViews -->
+            <RowDefinition Height="Auto"/> <!-- lblPopularity -->
+        </Grid.RowDefinitions>
 
+        <!-- TextBox и Button в первой строке -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
+            <TextBox Name="txtLogin" Width="200" Height="25" />
+            <Button Name="btnSearch" Content="Search" Width="80" Height="25" Margin="10,0,0,0"
+                    Click="BtnSearch_Click"/>
+        </StackPanel>
+
+        <Label Name="lblName" Grid.Row="1" Margin="0,10,0,0"/>
+        <Label Name="lblViews" Grid.Row="2" Margin="0,10,0,0"/>
+        <Label Name="lblPopularity" Grid.Row="3" Margin="0,10,0,0"/>
     </Grid>
 </Window>
