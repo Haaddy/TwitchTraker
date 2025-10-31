@@ -15,7 +15,7 @@ namespace TwitchTracker
         {
             InitializeComponent();
 
-            TwitchService twitchService = new TwitchService("ob1bnuwy4yzi5mgjz4f4n7b24z53np", "v9x6ep2elryogdfdtmt1sni84r4kbw","qy17uo7bv1o9xlvo3jgfynkq8k2i5a");
+            TwitchService twitchService = new TwitchService("client_id", "client_secret","Acssec token");
             _userManager = new UserManager(twitchService);
         }
 
