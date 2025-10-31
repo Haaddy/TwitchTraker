@@ -1,22 +1,16 @@
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
+using TwitchTracker.DAL;
+
+
 namespace TwitchTracker.BLL
 {
     public class UserStats
     {
-        public string DisplayName { get; private set; }
-        public long ViewCount { get; private set; }
-        public string PopularityLevel { get; private set; }
+        public string username { get; set; }
 
-        public UserStats(DAL.UserDto dto)
+        public UserStats(UserDto user)
         {
-            DisplayName = dto.DisplayName;
-            ViewCount = dto.ViewCount;
-
-            // Простейшая логика оценки популярности
-            PopularityLevel = ViewCount > 100000 ? "Very Popular" :
-                ViewCount > 10000 ? "Popular" : "Newbie";
+            username = user.username;
         }
-
-        // Дополнительные методы для бизнес-логики
-        public bool IsPopular() => ViewCount > 10000;
     }
 }
