@@ -59,6 +59,14 @@ public class TwitchService
         
     }
 
+    public async Task<bool> isLiveAsync(string login)
+    {
+        
+        await EsureTokenValidAsync();
+        var result = await _api.Helix.Streams.GetStreamsAsync(userLogins: new List<string> {login});
+        
+        return result.Streams != null && result.Streams.Any();
+    }
     public async Task<UserDto> GetUserAsync(String login)
     {
         await EsureTokenValidAsync();
@@ -66,7 +74,8 @@ public class TwitchService
         var result = await _api.Helix.Users.GetUsersAsync(logins: new List<string> {login});
 
         var user = result.Users.FirstOrDefault();
-
+        var isLive = await isLiveAsync(login);
+        
         if (user == null)
         {
             return null;
@@ -75,7 +84,11 @@ public class TwitchService
         return new UserDto
         {
             id = user.Id,
-            username = user.Login
+            username = user.Login,
+            displayName = user.DisplayName,
+            profileImageUrl = user.ProfileImageUrl,
+            isLive = isLive,
+            
         };
 
 

@@ -23,6 +23,7 @@ public class UserManager
             return null;
         }
         
+        
         return new UserStats(userDto);
     }
 
