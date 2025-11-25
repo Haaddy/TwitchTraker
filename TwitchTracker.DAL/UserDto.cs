@@ -9,4 +9,6 @@ public class UserDto
     public string profileImageUrl {get;set;}
     
     public bool isLive {get;set;}
+    
+    
 }

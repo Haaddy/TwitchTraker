@@ -10,12 +10,14 @@ namespace TwitchTracker.BLL
         public string displayName { get; set; }
         public string profileImageUrl { get; set; }
         public bool isLive { get; set; }
-        public UserStats(UserDto user)
+
+
+        public UserStats(UserDto userDto)
         {
-            username = user.username;
-            displayName = user.displayName;
-            profileImageUrl = user.profileImageUrl;
-            isLive = user.isLive;
+            username = userDto.username;
+            displayName = userDto.displayName;
+            profileImageUrl = userDto.profileImageUrl;
+            isLive = userDto.isLive;
         }
     }
 }
