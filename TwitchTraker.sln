@@ -1,10 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTraker", "TwitchTraker\TwitchTraker.csproj", "{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.TEST", "TwitchTracker.TEST\TwitchTracker.TEST.csproj", "{43DA1902-7CC6-4389-B341-CB88D577CB21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiwtchTraker.BLL", "TiwtchTraker.BLL\TiwtchTraker.BLL.csproj", "{D44057E9-87F5-4D6A-BE76-1B621EECA291}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.BLL", "TwitchTracker.BLL\TwitchTracker.BLL.csproj", "{5BB22BFF-FC82-4F27-8083-6B46BA8FDBB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.DAL", "TwitchTracker.DAL\TwitchTracker.DAL.csproj", "{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.Services", "TwitchTracker.Services\TwitchTracker.Services.csproj", "{3572DF4B-C677-4047-923F-C6484A20145A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.Models", "TwitchTracker.Models\TwitchTracker.Models.csproj", "{0B67DDC4-D905-4762-9182-DC479AB3AB4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,17 +14,21 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DEEDCC6D-A476-4CE1-B5E9-F4B68A4FA4DD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D44057E9-87F5-4D6A-BE76-1B621EECA291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D44057E9-87F5-4D6A-BE76-1B621EECA291}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D44057E9-87F5-4D6A-BE76-1B621EECA291}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D44057E9-87F5-4D6A-BE76-1B621EECA291}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B5A30A7-F7F1-4F80-8144-2588768D7E7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43DA1902-7CC6-4389-B341-CB88D577CB21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43DA1902-7CC6-4389-B341-CB88D577CB21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43DA1902-7CC6-4389-B341-CB88D577CB21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43DA1902-7CC6-4389-B341-CB88D577CB21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB22BFF-FC82-4F27-8083-6B46BA8FDBB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB22BFF-FC82-4F27-8083-6B46BA8FDBB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB22BFF-FC82-4F27-8083-6B46BA8FDBB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BB22BFF-FC82-4F27-8083-6B46BA8FDBB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3572DF4B-C677-4047-923F-C6484A20145A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3572DF4B-C677-4047-923F-C6484A20145A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3572DF4B-C677-4047-923F-C6484A20145A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3572DF4B-C677-4047-923F-C6484A20145A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B67DDC4-D905-4762-9182-DC479AB3AB4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B67DDC4-D905-4762-9182-DC479AB3AB4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B67DDC4-D905-4762-9182-DC479AB3AB4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B67DDC4-D905-4762-9182-DC479AB3AB4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
