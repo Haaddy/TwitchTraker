@@ -66,6 +66,33 @@ public class TwitchServices : ITwitchServices
             GameName = stream.GameName
         };
     }
-
     
+    public async Task<List<EndStreamDto>> GetVodsAsync(string streamerId, int count = 10)
+    {
+        var result = await _twitchAPI.Helix.Videos.GetVideosAsync(
+            userId: streamerId,
+            type: TwitchLib.Api.Core.Enums.VideoType.Archive,
+            first: count
+        );
+
+        return result.Videos.Select(v =>
+        {
+           
+
+            return new EndStreamDto
+            {
+                StreamId = v.Id,
+                StreamerId = v.UserId,
+                Title = v.Title,
+                
+                
+              
+                ViewCount = v.ViewCount,
+                Url = v.Url,
+                ThumbnailUrl = v.ThumbnailUrl
+            };
+        }).ToList();
+    }
+
 }
+    

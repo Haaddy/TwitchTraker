@@ -6,10 +6,12 @@ namespace TwitchTracker.BLL;
 public class StreamerStats
 {
     public ITwitchServices TwitchServices { get; set; }
+    private readonly ILastStreams _vodStreams;
 
-    public StreamerStats(ITwitchServices twitchServices)
+    public StreamerStats(ITwitchServices twitchServices , ILastStreams vodStreams)
     {
         TwitchServices = twitchServices;
+        _vodStreams = vodStreams;
         
     }
 
@@ -44,6 +46,11 @@ public class StreamerStats
         }
         
         return streamDto;
+    }
+    
+    public async Task<List<EndStreamDto>> GetLastVodsAsync(string streamerId, int count = 7)
+    {
+        return await _vodStreams.GetLastStreamsAsync(streamerId, count);
     }
     
 }
