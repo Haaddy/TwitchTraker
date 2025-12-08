@@ -8,8 +8,7 @@ public class StreamDto
     public long? ViewCount { get; set; } = null;
     public DateTime? StartTime { get; set; } = null;
     public string? StreamerId { get; set; } = null;
-
-    // Новые поля для категории
+    
     public string? GameId { get; set; } = null;
     public string? GameName { get; set; } = null;
 }

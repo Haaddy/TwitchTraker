@@ -15,10 +15,10 @@ public class EndStreamDto
     public string GameName { get; set; } = string.Empty;
 
     // Время начала стрима
-    // public DateTime StartedAt { get; set; }
+    public string? StartedAt { get; set; }
 
     // Время окончания стрима
-    // public DateTime EndedAt { get; set; }
+    public string? Duration { get; set; }
 
     // Количество просмотров
     public long ViewCount { get; set; }

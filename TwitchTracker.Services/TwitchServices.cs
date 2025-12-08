@@ -1,4 +1,5 @@
 using TwitchLib.Api;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchTracker.Models;
 
 namespace TwitchTracker.Services;
@@ -84,7 +85,8 @@ public class TwitchServices : ITwitchServices
                 StreamId = v.Id,
                 StreamerId = v.UserId,
                 Title = v.Title,
-                
+                StartedAt = v.CreatedAt,
+                Duration = v.Duration,
                 
               
                 ViewCount = v.ViewCount,
@@ -94,5 +96,24 @@ public class TwitchServices : ITwitchServices
         }).ToList();
     }
 
+
+    // public async Task<List<FollowedChannelDto>> GetFollowsAsync(string login)
+    // {
+    //     var user = await GetStreamerAsync(login);
+    //     if (user == null)
+    //         return null; // пользователь не существует
+    //
+    //     var result = await _twitchAPI.Helix.Users.GetUsersFollowsAsync(fromId: user.StreamerId);
+    //
+    //     if (result == null)
+    //         return new List<FollowedChannelDto>(); // просто нет подписок
+    //
+    //     return result.Follows.Select(f => new FollowedChannelDto
+    //     {
+    //         ChannelId = f.ToUserId,
+    //         ChannelName = f.ToUserName,
+    //         FollowedAt = f.FollowedAt
+    //     }).ToList();
+    // }
 }
     
