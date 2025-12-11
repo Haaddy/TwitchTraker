@@ -68,6 +68,7 @@ public class TwitchServices : ITwitchServices
         };
     }
     
+  
     public async Task<List<EndStreamDto>> GetVodsAsync(string streamerId, int count = 10)
     {
         var result = await _twitchAPI.Helix.Videos.GetVideosAsync(
@@ -76,44 +77,24 @@ public class TwitchServices : ITwitchServices
             first: count
         );
 
-        return result.Videos.Select(v =>
+        // Здесь только "сырые данные" в формате Twitch
+        return result.Videos.Select(v => new EndStreamDto
         {
-           
-
-            return new EndStreamDto
-            {
-                StreamId = v.Id,
-                StreamerId = v.UserId,
-                Title = v.Title,
-                StartedAt = v.CreatedAt,
-                Duration = v.Duration,
-                
-              
-                ViewCount = v.ViewCount,
-                Url = v.Url,
-                ThumbnailUrl = v.ThumbnailUrl
-            };
+            StreamId = v.Id,
+            StreamerId = v.UserId,
+            Title = v.Title,
+            StartedAtRaw = v.CreatedAt,   
+            DurationRaw = v.Duration,     
+            ViewCount = v.ViewCount,
+            Url = v.Url,
+            ThumbnailUrl = v.ThumbnailUrl
         }).ToList();
     }
+    
+    
+    
 
 
-    // public async Task<List<FollowedChannelDto>> GetFollowsAsync(string login)
-    // {
-    //     var user = await GetStreamerAsync(login);
-    //     if (user == null)
-    //         return null; // пользователь не существует
-    //
-    //     var result = await _twitchAPI.Helix.Users.GetUsersFollowsAsync(fromId: user.StreamerId);
-    //
-    //     if (result == null)
-    //         return new List<FollowedChannelDto>(); // просто нет подписок
-    //
-    //     return result.Follows.Select(f => new FollowedChannelDto
-    //     {
-    //         ChannelId = f.ToUserId,
-    //         ChannelName = f.ToUserName,
-    //         FollowedAt = f.FollowedAt
-    //     }).ToList();
-    // }
+   
 }
     

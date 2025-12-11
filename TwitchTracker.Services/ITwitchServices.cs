@@ -10,5 +10,5 @@ public interface ITwitchServices
     Task<StreamDto> GetStreamAsync(string login);
     
     Task<List<EndStreamDto>> GetVodsAsync(string streamerId, int count = 10);
-    // Task<List<FollowedChannelDto>> GetFollowsAsync(string login);
+    
 }

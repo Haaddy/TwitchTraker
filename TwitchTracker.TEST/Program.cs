@@ -8,72 +8,59 @@ namespace TwitchTraker
         public static async Task Main(string[] args)
         {
 
-            ITwitchServices twitchServices =
-                new TwitchServices("ob1bnuwy4yzi5mgjz4f4n7b24z53np", "aw36654dlpjt2hddtco8eqvdvez1zv");
-            StreamerStats stats = new StreamerStats(twitchServices, new VODStreams(twitchServices));
-            GetUserFollows userFollows = new GetUserFollows(twitchServices);
-            
+            ITwitchServices twitchServices = new TwitchServices(
+                "ob1bnuwy4yzi5mgjz4f4n7b24z53np",
+                "rbrzchwehbvjqros53sgbvjwm07v1e"
+            );
 
+            StreamerStats stats = new StreamerStats(twitchServices);
 
-
-
-
-
-
-            var info = await stats.GetStreamerInfoAsync("evelone2004");
+            var streamerInfo = await stats.GetStreamerInfoAsync("evelone2004");
             var liveStream = await stats.GetLiveStreamAsync("evelone2004");
-            // var FollowList = await userFollows.GetUserFollowsAsync("haaaddy");
 
+            Console.WriteLine("\n=== Streamer info ===");
+            Console.WriteLine($"ID: {streamerInfo.StreamerId}");
+            Console.WriteLine($"Login: {streamerInfo.Login}");
+            Console.WriteLine($"Display Name: {streamerInfo.DisplayName}");
+            Console.WriteLine($"Avatar: {streamerInfo.Avatar}");
+            Console.WriteLine($"Followers: {streamerInfo.TotalFollowers}");
+            Console.WriteLine($"Description: {streamerInfo.Bio}");
 
-            if (info == null)
+            Console.WriteLine("\n=== Current stream ===");
+            if (liveStream.IsLive)
             {
-                Console.WriteLine("Стример не найден.");
-                return ;
+                Console.WriteLine($"Stream: {liveStream.Title}");
+                Console.WriteLine($"Stream ID: {liveStream.StreamId}");
+                Console.WriteLine($"Viewers: {liveStream.ViewCount}");
+                Console.WriteLine($"Started: {liveStream.StartTime}");
+                Console.WriteLine($"Category: {liveStream.GameName}");
+            }
+            else
+            {
+                Console.WriteLine("offline");
             }
 
-            var vods = await stats.GetLastVodsAsync(info.StreamerId, 5);
-
-            // вывод информации 
-            Console.WriteLine("\n=== Информация о стримере ===");
-            Console.WriteLine($"ID: {info.StreamerId}");
-            Console.WriteLine($"Login: {info.Login}");
-            Console.WriteLine($"Display Name: {info.DisplayName}");
-            Console.WriteLine($"Avatar: {info.Avatar}");
-            Console.WriteLine($"Followers: {info.TotalFollowers}");
-            Console.WriteLine($"Description: {info.Bio}");
-
-            Console.WriteLine($"Stream: {liveStream.Title}");
-            Console.WriteLine($"Stream id: {liveStream.StreamerId}");
-            Console.WriteLine($"Online: {liveStream.ViewCount}");
-            Console.WriteLine($"Started: {liveStream.StartTime}");
-            Console.WriteLine($"Stream is : {(liveStream.IsLive ? "online" : "offline")}");
-            Console.WriteLine($"Stream: {liveStream.StreamerId}");
-            Console.WriteLine($"cATEGORY: {liveStream.GameName}");
-            Console.WriteLine($"Stream: {liveStream.GameId}");
-
-            Console.WriteLine("\n=== Последние VOD ===");
+            // Получаем VOD
+            var vods = await stats.GetLastVodsAsync(streamerInfo.StreamerId, 15);
+            Console.WriteLine("\n=== Lasted 10 VOD ===");
             foreach (var vod in vods)
             {
                 Console.WriteLine($"Title: {vod.Title}");
-                Console.WriteLine($"StreamId: {vod.StreamId}");
-                Console.WriteLine($"StreamerId: {vod.StreamerId}");
-                Console.WriteLine($"Views: {vod.ViewCount}");
-                Console.WriteLine($"Url: {vod.Url}");
-                Console.WriteLine($"Thumbnail: {vod.ThumbnailUrl}");
-                Console.WriteLine($"Started At: {vod.StartedAt}");
+                Console.WriteLine($"Started: {vod.StartedAt}");
                 Console.WriteLine($"Duration: {vod.Duration}");
-                Console.WriteLine("---------------------------");
+                Console.WriteLine($"Views: {vod.ViewCount}");
+                Console.WriteLine($"URL: {vod.Url}");
+                Console.WriteLine("------------------------");
             }
-            
-            // Console.WriteLine("\n My follows");
-            // foreach (var follow in FollowList)
-            // {
-            //     Console.WriteLine($"Channel ID: {follow.ChannelId}");
-            //     Console.WriteLine($"Channel Name: {follow.ChannelName}");
-            //     Console.WriteLine($"Followd at: {follow.FollowedAt}");
-            //     Console.WriteLine($"Follower ID ID: {follow.FollowerId}");
-            //     Console.WriteLine($"Follower name: {follow.FollowerName}");
-            // }
+
+            // Статистика за последние N дней (например 30)
+            int days = 30;
+            Console.WriteLine($"\n=== Stats for last  {days} дней ===");
+            Console.WriteLine($"Count of Streams: {stats.GetStreamsCountForLastNDays(days)}");
+            Console.WriteLine($"AVG Duration: {stats.GetAverageStreamDurationForLastNDays(days)}");
+            Console.WriteLine($"AVG Views: {stats.GetAverageViewsForLastNDays(days)}");
         }
+
+
     }
 }
