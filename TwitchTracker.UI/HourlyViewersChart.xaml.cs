@@ -49,7 +49,6 @@ namespace TwitchTrackerUI
 
             var streams = await _historyService.GetStreamsAsync(_streamerId);
 
-            // Инициализируем массив для 24 часов
             double[] avgViewersPerHour = new double[24];
             int[] countsPerHour = new int[24];
 
@@ -65,35 +64,42 @@ namespace TwitchTrackerUI
 
             for (int i = 0; i < 24; i++)
                 if (countsPerHour[i] > 0)
-                    avgViewersPerHour[i] /= countsPerHour[i]; // среднее по часам
+                    avgViewersPerHour[i] /= countsPerHour[i];
 
             var plotModel = new PlotModel
             {
-                Title = "Средний онлайн по часам",
-                Background = OxyColors.DarkGray,
+                Title = "",
+                Background = OxyColor.FromRgb(24, 24, 27), // совпадает с основным окном
                 TextColor = OxyColors.White,
                 PlotAreaBorderColor = OxyColors.Gray
             };
 
-            // Ось Y
+            // Оси
             plotModel.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Left,
                 Title = "Средний онлайн",
+                Minimum = 0,
                 TextColor = OxyColors.White,
                 TitleColor = OxyColors.White,
-                Minimum = 0,
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot,
+                MajorGridlineColor = OxyColor.FromRgb(60, 60, 60),
+                MinorGridlineColor = OxyColor.FromRgb(50, 50, 50),
                 IsZoomEnabled = false,
                 IsPanEnabled = false
             });
 
-            // Ось X
             var categoryAxis = new CategoryAxis
             {
                 Position = AxisPosition.Bottom,
-                TextColor = OxyColors.White,
                 Title = "Час суток",
+                TextColor = OxyColors.White,
                 TitleColor = OxyColors.White,
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot,
+                MajorGridlineColor = OxyColor.FromRgb(60, 60, 60),
+                MinorGridlineColor = OxyColor.FromRgb(50, 50, 50),
                 IsZoomEnabled = false,
                 IsPanEnabled = false
             };
@@ -103,18 +109,19 @@ namespace TwitchTrackerUI
             // Линия
             var lineSeries = new LineSeries
             {
-                Color = OxyColors.MediumPurple,
+                Color = OxyColor.FromRgb(145, 70, 255), // пурпурная линия
                 MarkerType = MarkerType.Circle,
-                MarkerSize = 4,
+                MarkerSize = 5,
                 MarkerFill = OxyColors.White,
-                TrackerFormatString = "Час: {2}\nОнлайн: {4:0}",
-                
+                StrokeThickness = 2,
+                TrackerFormatString = "Час: {2}\nОнлайн: {4:0}"
             };
 
             for (int i = 0; i < 24; i++)
                 lineSeries.Points.Add(new DataPoint(i, Math.Round(avgViewersPerHour[i])));
 
             plotModel.Series.Add(lineSeries);
+
             plotHourlyViewers.Model = plotModel;
         }
     }
