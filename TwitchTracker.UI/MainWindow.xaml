@@ -1,0 +1,90 @@
+﻿<Window x:Class="TwitchTrackerUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Twitch Tracker" Height="750" Width="950"
+        Background="#18181B" WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Панель поиска -->
+            <RowDefinition Height="*"/>    <!-- Основной контент -->
+        </Grid.RowDefinitions>
+
+        <!-- Панель поиска -->
+        <Border Grid.Row="0" CornerRadius="10" Background="#252526" Padding="10" HorizontalAlignment="Center" Margin="0,10">
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="txtStreamerLogin" Width="250" Height="35"
+                         Margin="0,0,10,0"
+                         Background="#1E1E1E" Foreground="White" 
+                         BorderBrush="#9146FF" BorderThickness="1"
+                         Padding="5" FontSize="14" VerticalContentAlignment="Center"/>
+                <Button x:Name="btnSearch" Content="Search" Width="100" Height="35"
+                        Background="#9146FF" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Основной контент -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,0,10,10">
+            <StackPanel x:Name="MainContent" Orientation="Vertical">
+
+                <!-- Карточка стримера -->
+                <StackPanel x:Name="spStreamerInfo" Orientation="Vertical" Background="#252526" Margin="0,10" Visibility="Collapsed">
+
+                    <!-- Аватар и базовая информация -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Image x:Name="imgAvatar" Width="80" Height="80" Margin="0,0,10,0" Stretch="UniformToFill" ClipToBounds="True"/>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock x:Name="txtDisplayName" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock x:Name="txtFollowers" FontSize="14" Foreground="White"/>
+                            <TextBlock x:Name="txtBio" FontSize="12" Foreground="LightGray" TextWrapping="Wrap" Width="300"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Блок текущего стрима -->
+                    <Border x:Name="brdLiveStream" CornerRadius="8" Background="#3C3C3C" Padding="10" Margin="0,10,0,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse x:Name="ellipseLive" Width="15" Height="15" Fill="Gray" VerticalAlignment="Center"/>
+                            <StackPanel Margin="10,0,0,0">
+                                <TextBlock x:Name="txtStreamStatus" FontSize="16" FontWeight="Bold" Foreground="White"/>
+                                <TextBlock x:Name="txtStreamTitle" FontSize="14" Foreground="White"/>
+                                <TextBlock x:Name="txtStreamViewers" FontSize="14" Foreground="White"/>
+                                <TextBlock x:Name="txtStreamGame" FontSize="14" Foreground="White"/>
+                                <TextBlock x:Name="txtStreamLanguage" FontSize="14" Foreground="White"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Блок статистики по завершённым стримам -->
+                    <TextBlock Text="Статистика по завершённым стримам" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,15,0,5"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                        <Border Background="#252526" Padding="10" CornerRadius="8" Width="120">
+                            <StackPanel>
+                                <TextBlock Text="Пиковый онлайн" Foreground="LightGray" FontSize="12" TextAlignment="Center"/>
+                                <TextBlock x:Name="txtMaxViewers" Foreground="White" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#252526" Padding="10" CornerRadius="8" Width="120">
+                            <StackPanel>
+                                <TextBlock Text="Средние зрители" Foreground="LightGray" FontSize="12" TextAlignment="Center"/>
+                                <TextBlock x:Name="txtAvgViewers" Foreground="White" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#252526" Padding="10" CornerRadius="8" Width="120">
+                            <StackPanel>
+                                <TextBlock Text="Средняя длительность" Foreground="LightGray" FontSize="12" TextAlignment="Center"/>
+                                <TextBlock x:Name="txtTotalDuration" Foreground="White" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#252526" Padding="10" CornerRadius="8" Width="120">
+                            <StackPanel>
+                                <TextBlock Text="Кол-во стримов" Foreground="LightGray" FontSize="12" TextAlignment="Center"/>
+                                <TextBlock x:Name="txtStreamCount" Foreground="White" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
