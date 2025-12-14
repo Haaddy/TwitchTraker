@@ -88,13 +88,13 @@ public partial class MainWindow : Window
         }
 
         // --- Обновление статистики по завершённым стримам ---
-        await UpdateCompletedStreamStatsAsync(login);
+        await UpdateCompletedStreamStatsAsync(streamer.StreamerId);
     }
 
-    private async Task UpdateCompletedStreamStatsAsync(string login)
+    private async Task UpdateCompletedStreamStatsAsync(string streamerId)
     {
         var historyService = new LiveStreamHistoryService(_logRepo);
-        var completedStreams = (await historyService.GetStreamsAsync(login))
+        var completedStreams = (await historyService.GetStreamsAsync(streamerId))
             .Where(s => s.EndedAt < DateTime.UtcNow)
             .ToList();
 
