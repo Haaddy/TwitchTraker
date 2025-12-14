@@ -1,13 +1,14 @@
 ﻿<Window x:Class="TwitchTrackerUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Twitch Tracker" Height="750" Width="950"
+        xmlns:local="clr-namespace:TwitchTrackerUI"
+        Title="Twitch Tracker" Height="900" Width="950"
         Background="#18181B" WindowStartupLocation="CenterScreen">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Панель поиска -->
-            <RowDefinition Height="*"/>    <!-- Основной контент -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Панель поиска -->
@@ -82,6 +83,14 @@
                             </StackPanel>
                         </Border>
                     </StackPanel>
+
+                    <!-- График доли игр по онлайну -->
+                    <TextBlock Text="Доля игр по онлайну" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,10,0,5"/>
+                    <local:GamePieChart x:Name="gamePieChart" Height="300" Margin="0,0,0,15"/>
+
+                    <!-- График среднего онлайн по часам -->
+                    <TextBlock Text="Средний онлайн по часам" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,10,0,5"/>
+                    <local:HourlyViewersChart x:Name="hourlyViewersChart" Height="300" Margin="0,0,0,15"/>
 
                 </StackPanel>
             </StackPanel>

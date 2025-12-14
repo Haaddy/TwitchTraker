@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TwitchTracker.BLL;
 using TwitchTracker.DAL;
-using TwitchTracker.Models;
 using TwitchTracker.Services;
 
 namespace TwitchTrackerUI
@@ -19,9 +18,7 @@ namespace TwitchTrackerUI
         private readonly StreamerStats _stats;
         private readonly TrackedStreamersService _tracked;
         private readonly ILiveStreamLogRepository _logRepo;
-
-        private DispatcherTimer _updateTimer;
-        private string _currentLogin;
+        private readonly DispatcherTimer _timer;
 
         public MainWindow()
         {
@@ -47,15 +44,20 @@ namespace TwitchTrackerUI
             _tracked = host.Services.GetRequiredService<TrackedStreamersService>();
             _logRepo = host.Services.GetRequiredService<ILiveStreamLogRepository>();
 
+            // Инициализация графиков репозиторием
+            gamePieChart.Initialize(_logRepo);
+            hourlyViewersChart.Initialize(_logRepo);
+
             btnSearch.Click += BtnSearch_Click;
 
-            // Таймер для автообновления метрик и текущего стрима
-            _updateTimer = new DispatcherTimer
+            // Таймер для обновления текущего стрима и метрик
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
+            _timer.Tick += async (s, e) =>
             {
-                Interval = TimeSpan.FromSeconds(30)
+                if (!string.IsNullOrEmpty(txtStreamerLogin.Text))
+                    await RefreshStreamerDataAsync(txtStreamerLogin.Text.Trim());
             };
-            _updateTimer.Tick += async (s, e) => await UpdateMetricsAsync();
-            _updateTimer.Start();
+            _timer.Start();
         }
 
         private async void BtnSearch_Click(object sender, RoutedEventArgs e)
@@ -63,17 +65,13 @@ namespace TwitchTrackerUI
             string login = txtStreamerLogin.Text.Trim();
             if (string.IsNullOrEmpty(login)) return;
 
-            _currentLogin = login;
             _tracked.Add(login);
-
-            await UpdateMetricsAsync();
+            await RefreshStreamerDataAsync(login);
         }
 
-        private async Task UpdateMetricsAsync()
+        private async Task RefreshStreamerDataAsync(string login)
         {
-            if (string.IsNullOrEmpty(_currentLogin)) return;
-
-            var streamer = await _stats.GetStreamerInfoAsync(_currentLogin);
+            var streamer = await _stats.GetStreamerInfoAsync(login);
             if (streamer == null)
             {
                 MessageBox.Show("Стример не найден.");
@@ -87,25 +85,8 @@ namespace TwitchTrackerUI
             txtFollowers.Text = $"Подписчики: {streamer.TotalFollowers}";
             txtBio.Text = streamer.Bio;
 
-            var stream = await _stats.GetLiveStreamAsync(_currentLogin);
-            UpdateLiveStreamUI(stream);
-
-            await UpdateCompletedStreamStatsAsync(streamer.StreamerId);
-        }
-
-        private void UpdateLiveStreamUI(StreamDto stream)
-        {
-            if (stream == null || !stream.IsLive)
-            {
-                brdLiveStream.Background = new SolidColorBrush(Color.FromRgb(80, 80, 80));
-                ellipseLive.Fill = new SolidColorBrush(Color.FromRgb(128, 128, 128));
-                txtStreamStatus.Text = "Оффлайн";
-                txtStreamTitle.Text = "";
-                txtStreamViewers.Text = "";
-                txtStreamGame.Text = "";
-                txtStreamLanguage.Text = "";
-            }
-            else
+            var stream = await _stats.GetLiveStreamAsync(login);
+            if (stream.IsLive)
             {
                 brdLiveStream.Background = new SolidColorBrush(Color.FromRgb(145, 70, 255));
                 ellipseLive.Fill = new SolidColorBrush(Color.FromRgb(0, 255, 0));
@@ -115,6 +96,23 @@ namespace TwitchTrackerUI
                 txtStreamGame.Text = $"Игра: {stream.GameName}";
                 txtStreamLanguage.Text = $"Язык: {stream.Language}";
             }
+            else
+            {
+                brdLiveStream.Background = new SolidColorBrush(Color.FromRgb(80, 80, 80));
+                ellipseLive.Fill = new SolidColorBrush(Color.FromRgb(128, 128, 128));
+                txtStreamStatus.Text = "Оффлайн";
+                txtStreamTitle.Text = "";
+                txtStreamViewers.Text = "";
+                txtStreamGame.Text = "";
+                txtStreamLanguage.Text = "";
+            }
+
+            // --- Обновление статистики ---
+            await UpdateCompletedStreamStatsAsync(streamer.StreamerId);
+
+            // --- Обновление графиков ---
+            gamePieChart.SetStreamer(streamer.StreamerId);
+            hourlyViewersChart.SetStreamer(streamer.StreamerId);
         }
 
         private async Task UpdateCompletedStreamStatsAsync(string streamerId)
