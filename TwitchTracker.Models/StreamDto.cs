@@ -11,4 +11,6 @@ public class StreamDto
     
     public string? GameId { get; set; } = null;
     public string? GameName { get; set; } = null;
+    
+    public string? Language { get; set; }
 }

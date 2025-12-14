@@ -64,7 +64,9 @@ public class TwitchServices : ITwitchServices
             StartTime = stream.StartedAt,
             StreamerId = stream.UserId,
             GameId = stream.GameId,
-            GameName = stream.GameName
+            GameName = stream.GameName,
+            Language = stream.Language,
+            
         };
     }
     
@@ -87,7 +89,8 @@ public class TwitchServices : ITwitchServices
             DurationRaw = v.Duration,     
             ViewCount = v.ViewCount,
             Url = v.Url,
-            ThumbnailUrl = v.ThumbnailUrl
+            ThumbnailUrl = v.ThumbnailUrl,
+            Language = v.Language,
         }).ToList();
     }
     

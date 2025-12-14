@@ -17,4 +17,5 @@ public class EndStreamDto
     public long ViewCount { get; set; }
     public string? Url { get; set; }
     public string? ThumbnailUrl { get; set; }
+    public string? Language { get; set; }
 }

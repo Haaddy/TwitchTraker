@@ -1,5 +1,6 @@
-using TwitchTracker.Services;
+using TwitchTracker.DAL;
 using TwitchTracker.Models;
+using TwitchTracker.Services;
 
 namespace TwitchTracker.BLL;
 
@@ -7,35 +8,74 @@ public class StreamerStats
 {
     private readonly ITwitchServices _twitchServices;
     private readonly VODStreams _vodStreams;
+    private readonly ILiveStreamLogRepository _logRepo;
+    private readonly LiveStreamHistoryService _historyService;
 
-    public StreamerStats(ITwitchServices twitchServices)
+    public StreamerStats(ITwitchServices twitchServices, ILiveStreamLogRepository logRepo)
     {
         _twitchServices = twitchServices;
         _vodStreams = new VODStreams(_twitchServices);
+        _logRepo = logRepo;
+        _historyService = new LiveStreamHistoryService(_logRepo);
     }
 
-    // Получение базовой информации о стримере
     public async Task<StreamerDto> GetStreamerInfoAsync(string login)
     {
         if (string.IsNullOrEmpty(login)) return null;
         return await _twitchServices.GetStreamerAsync(login);
     }
 
-    // Получение текущего стрима
     public async Task<StreamDto> GetLiveStreamAsync(string login)
     {
         if (string.IsNullOrEmpty(login)) return null;
         return await _twitchServices.GetStreamAsync(login);
     }
 
-    // Получение последних VOD
     public async Task<List<EndStreamDto>> GetLastVodsAsync(string streamerId, int count = 50)
     {
         return await _vodStreams.GetLastStreamsAsync(streamerId, count);
     }
 
-    // --- Методы статистики за N дней ---
-    public int GetStreamsCountForLastNDays(int n) => _vodStreams.GetStreamsCountForLastNDays(n);
-    public TimeSpan GetAverageStreamDurationForLastNDays(int n) => _vodStreams.GetAverageStreamDurationForLastNDays(n);
-    public long GetAverageViewsForLastNDays(int n) => _vodStreams.GetAverageViewsForLastNDays(n);
+    // --- Методы статистики по завершённым стримам ---
+
+    private async Task<List<LoggedStream>> GetLoggedStreamsAsync(string streamerId)
+    {
+        return await _historyService.GetStreamsAsync(streamerId);
+    }
+
+    public async Task<long> GetMaxViewersAsync(string streamerId, int lastNStreams = 0)
+    {
+        var streams = await GetLoggedStreamsAsync(streamerId);
+        if (lastNStreams > 0)
+            streams = streams.OrderByDescending(s => s.StartedAt).Take(lastNStreams).ToList();
+
+        return streams.Any() ? streams.Max(s => s.PeakViewers) : 0;
+    }
+
+    public async Task<long> GetAverageViewersAsync(string streamerId, int lastNStreams = 0)
+    {
+        var streams = await GetLoggedStreamsAsync(streamerId);
+        if (lastNStreams > 0)
+            streams = streams.OrderByDescending(s => s.StartedAt).Take(lastNStreams).ToList();
+
+        return streams.Any() ? (long)streams.Average(s => s.AverageViewers) : 0;
+    }
+
+    public async Task<TimeSpan> GetTotalDurationAsync(string streamerId, int lastNStreams = 0)
+    {
+        var streams = await GetLoggedStreamsAsync(streamerId);
+        if (lastNStreams > 0)
+            streams = streams.OrderByDescending(s => s.StartedAt).Take(lastNStreams).ToList();
+
+        return streams.Aggregate(TimeSpan.Zero, (sum, s) => sum + s.Duration);
+    }
+
+    public async Task<int> GetStreamCountAsync(string streamerId, int lastNStreams = 0)
+    {
+        var streams = await GetLoggedStreamsAsync(streamerId);
+        if (lastNStreams > 0)
+            streams = streams.OrderByDescending(s => s.StartedAt).Take(lastNStreams).ToList();
+
+        return streams.Count;
+    }
 }

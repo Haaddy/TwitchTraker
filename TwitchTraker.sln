@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.Services", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.Models", "TwitchTracker.Models\TwitchTracker.Models.csproj", "{0B67DDC4-D905-4762-9182-DC479AB3AB4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.DAL", "TwitchTracker.DAL\TwitchTracker.DAL.csproj", "{4A37FE36-B504-41DF-9688-63772BA7CFD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchTracker.UI", "TwitchTracker.UI\TwitchTracker.UI.csproj", "{E7FD236E-E52F-4000-8929-8711064743B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{0B67DDC4-D905-4762-9182-DC479AB3AB4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B67DDC4-D905-4762-9182-DC479AB3AB4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B67DDC4-D905-4762-9182-DC479AB3AB4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A37FE36-B504-41DF-9688-63772BA7CFD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A37FE36-B504-41DF-9688-63772BA7CFD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A37FE36-B504-41DF-9688-63772BA7CFD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A37FE36-B504-41DF-9688-63772BA7CFD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7FD236E-E52F-4000-8929-8711064743B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7FD236E-E52F-4000-8929-8711064743B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7FD236E-E52F-4000-8929-8711064743B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7FD236E-E52F-4000-8929-8711064743B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

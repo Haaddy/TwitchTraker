@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\TwitchTracker.DAL\TwitchTracker.DAL.csproj" />
         <ProjectReference Include="..\TwitchTracker.Services\TwitchTracker.Services.csproj" />
     </ItemGroup>
 </Project>

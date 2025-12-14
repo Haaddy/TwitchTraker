@@ -1,66 +1,141 @@
-﻿using TwitchTracker.BLL;
+﻿using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using TwitchTracker.BLL;
+using TwitchTracker.DAL;
 using TwitchTracker.Services;
 
-namespace TwitchTraker
+internal class Program
 {
-    class Programh
+    private static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
+        // UTF-8 для русских символов (Rider / Windows)
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.InputEncoding = Encoding.UTF8;
 
-            ITwitchServices twitchServices = new TwitchServices(
-                "ob1bnuwy4yzi5mgjz4f4n7b24z53np",
-                "rbrzchwehbvjqros53sgbvjwm07v1e"
-            );
-
-            StreamerStats stats = new StreamerStats(twitchServices);
-
-            var streamerInfo = await stats.GetStreamerInfoAsync("evelone2004");
-            var liveStream = await stats.GetLiveStreamAsync("evelone2004");
-
-            Console.WriteLine("\n=== Streamer info ===");
-            Console.WriteLine($"ID: {streamerInfo.StreamerId}");
-            Console.WriteLine($"Login: {streamerInfo.Login}");
-            Console.WriteLine($"Display Name: {streamerInfo.DisplayName}");
-            Console.WriteLine($"Avatar: {streamerInfo.Avatar}");
-            Console.WriteLine($"Followers: {streamerInfo.TotalFollowers}");
-            Console.WriteLine($"Description: {streamerInfo.Bio}");
-
-            Console.WriteLine("\n=== Current stream ===");
-            if (liveStream.IsLive)
+        using var host = Host.CreateDefaultBuilder()
+            .ConfigureServices(services =>
             {
-                Console.WriteLine($"Stream: {liveStream.Title}");
-                Console.WriteLine($"Stream ID: {liveStream.StreamId}");
-                Console.WriteLine($"Viewers: {liveStream.ViewCount}");
-                Console.WriteLine($"Started: {liveStream.StartTime}");
-                Console.WriteLine($"Category: {liveStream.GameName}");
+                string clientId = "ob1bnuwy4yzi5mgjz4f4n7b24z53np";
+                string accessToken = "l5a0drbbczqyxk044zj6ipkkxz7jfl";
+
+                // Services
+                services.AddSingleton<ITwitchServices>(_ =>
+                    new TwitchServices(clientId, accessToken));
+
+                // DAL
+                services.AddSingleton<ILiveStreamLogRepository, JsonLiveStreamLogRepository>();
+
+                // BLL
+                services.AddSingleton<TrackedStreamersService>();
+                services.AddSingleton<StreamerStats>();
+                services.AddSingleton<LiveStreamHistoryService>();
+                services.AddSingleton<LiveStreamAnalytics>();
+
+                // Background logging
+                services.AddHostedService<LiveStreamLoggingService>();
+            })
+            .Build();
+
+        // Получаем сервисы
+        var trackedStreamers = host.Services.GetRequiredService<TrackedStreamersService>();
+        var stats = host.Services.GetRequiredService<StreamerStats>();
+        var history = host.Services.GetRequiredService<LiveStreamHistoryService>();
+        var analytics = host.Services.GetRequiredService<LiveStreamAnalytics>();
+
+        // Запуск фонового логирования
+        await host.StartAsync();
+
+        Console.WriteLine("TwitchTracker запущен.\n");
+
+        while (true)
+        {
+            Console.Write("Введите ник стримера (Enter — выход): ");
+            var login = Console.ReadLine()?.Trim();
+
+            if (string.IsNullOrWhiteSpace(login))
+                break;
+
+            // Добавляем в логирование (если уже есть — ничего страшного)
+            trackedStreamers.Add(login);
+
+            // === БАЗОВАЯ ИНФОРМАЦИЯ ===
+            var streamer = await stats.GetStreamerInfoAsync(login);
+            if (streamer == null)
+            {
+                Console.WriteLine("❌ Стример не найден.\n");
+                continue;
+            }
+
+            Console.WriteLine($"\n=== {streamer.DisplayName} ({streamer.Login}) ===");
+            Console.WriteLine($"ID: {streamer.StreamerId}");
+            Console.WriteLine($"Подписчики: {streamer.TotalFollowers}");
+            Console.WriteLine($"Био: {streamer.Bio}\n");
+
+            // === ТЕКУЩИЙ СТРИМ ===
+            var stream = await stats.GetLiveStreamAsync(login);
+            if (stream.IsLive)
+            {
+                Console.WriteLine("🔴 Сейчас в эфире:");
+                Console.WriteLine($"Тайтл: {stream.Title}");
+                Console.WriteLine($"Зрители: {stream.ViewCount}");
+                Console.WriteLine($"Категория: {stream.GameName}");
+                Console.WriteLine($"Язык: {stream.Language}\n");
             }
             else
             {
-                Console.WriteLine("offline");
+                Console.WriteLine("⚫ Сейчас оффлайн\n");
             }
 
-            // Получаем VOD
-            var vods = await stats.GetLastVodsAsync(streamerInfo.StreamerId, 15);
-            Console.WriteLine("\n=== Lasted 10 VOD ===");
+            // === VOD ===
+            var vods = await stats.GetLastVodsAsync(streamer.StreamerId, 5);
+
+            Console.WriteLine("📼 Последние VOD:");
             foreach (var vod in vods)
             {
-                Console.WriteLine($"Title: {vod.Title}");
-                Console.WriteLine($"Started: {vod.StartedAt}");
-                Console.WriteLine($"Duration: {vod.Duration}");
-                Console.WriteLine($"Views: {vod.ViewCount}");
-                Console.WriteLine($"URL: {vod.Url}");
-                Console.WriteLine("------------------------");
+                Console.WriteLine(
+                    $"{vod.StartedAt:yyyy-MM-dd} | " +
+                    $"{vod.ViewCount} просмотров | " +
+                    $"{vod.Duration} | " +
+                    $"{vod.Title}");
             }
 
-            // Статистика за последние N дней (например 30)
-            int days = 30;
-            Console.WriteLine($"\n=== Stats for last  {days} дней ===");
-            Console.WriteLine($"Count of Streams: {stats.GetStreamsCountForLastNDays(days)}");
-            Console.WriteLine($"AVG Duration: {stats.GetAverageStreamDurationForLastNDays(days)}");
-            Console.WriteLine($"AVG Views: {stats.GetAverageViewsForLastNDays(days)}");
+            Console.WriteLine("\n📊 VOD-статистика (7 дней):");
+            Console.WriteLine($"Стримов: {stats.GetStreamsCountForLastNDays(7)}");
+            Console.WriteLine($"Средняя длительность: {stats.GetAverageStreamDurationForLastNDays(7)}");
+            Console.WriteLine($"Средние просмотры: {stats.GetAverageViewsForLastNDays(7)}");
+
+            // === ЛОГИ И АНАЛИТИКА ===
+            var snapshots = await history.GetLiveSnapshotsAsync(streamer.StreamerId);
+            var streams = await history.GetStreamsAsync(streamer.StreamerId);
+
+            if (snapshots.Any())
+            {
+                Console.WriteLine("\n📈 Аналитика по логам:");
+                Console.WriteLine($"Всего снапшотов: {snapshots.Count}");
+                Console.WriteLine($"Пиковый онлайн: {analytics.GetPeakViewers(snapshots)}");
+                Console.WriteLine($"Средний онлайн за стрим: {analytics.GetAverageViewersPerStream(streams)}");
+                Console.WriteLine($"Средняя длительность стрима (по логам): {analytics.GetAverageStreamDuration(streams)}");
+
+                Console.WriteLine("\n🕒 Последние снапшоты:");
+                foreach (var s in snapshots.TakeLast(5))
+                {
+                    Console.WriteLine(
+                        $"{s.TimestampUtc:HH:mm:ss} | " +
+                        $"{s.Viewers} зрителей | " +
+                        $"{s.GameName} | " +
+                        $"{s.Title}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("\n⏳ Логи ещё не накоплены.");
+            }
+
+            Console.WriteLine("\n(Стример добавлен в фоновое логирование)\n");
         }
 
-
+        await host.StopAsync();
+        Console.WriteLine("Приложение остановлено.");
     }
 }
