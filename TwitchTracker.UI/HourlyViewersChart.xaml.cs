@@ -93,7 +93,7 @@ namespace TwitchTrackerUI
             var categoryAxis = new CategoryAxis
             {
                 Position = AxisPosition.Bottom,
-                Title = "Час суток",
+                Title = "Час суток (UTC)",
                 TextColor = OxyColors.White,
                 TitleColor = OxyColors.White,
                 MajorGridlineStyle = LineStyle.Solid,

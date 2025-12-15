@@ -29,7 +29,7 @@ namespace TwitchTrackerUI
                 {
                     services.AddSingleton<ITwitchServices>(_ => new TwitchServices(
                         "ob1bnuwy4yzi5mgjz4f4n7b24z53np",
-                        "t767s7glzpa47c5sfuldxw5qbl89oh"));
+                        "jmxl64wg5aeuezx5lmf7ofdfoufta0"));
 
                     services.AddSingleton<ILiveStreamLogRepository, JsonLiveStreamLogRepository>();
                     services.AddSingleton<TrackedStreamersService>();
@@ -44,11 +44,15 @@ namespace TwitchTrackerUI
             _tracked = host.Services.GetRequiredService<TrackedStreamersService>();
             _logRepo = host.Services.GetRequiredService<ILiveStreamLogRepository>();
 
-            // Инициализация графиков репозиторием
+            // Инициализация графиков репозиторием логов
+            allHourlyViewersChart.Initialize(_logRepo);
+            allHourlyViewersChart.Start();
+
             gamePieChart.Initialize(_logRepo);
             hourlyViewersChart.Initialize(_logRepo);
 
             btnSearch.Click += BtnSearch_Click;
+            btnHome.Click += BtnHome_Click;
 
             // Таймер для обновления текущего стрима и метрик
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
@@ -66,10 +70,16 @@ namespace TwitchTrackerUI
             if (string.IsNullOrEmpty(login)) return;
 
             _tracked.Add(login);
-            await RefreshStreamerDataAsync(login);
+            await ShowStreamerViewAsync(login);
         }
 
-        private async Task RefreshStreamerDataAsync(string login)
+        private void BtnHome_Click(object sender, RoutedEventArgs e)
+        {
+            spStreamerInfo.Visibility = Visibility.Collapsed;
+            allHourlyViewersChart.Visibility = Visibility.Visible;
+        }
+
+        private async Task ShowStreamerViewAsync(string login)
         {
             var streamer = await _stats.GetStreamerInfoAsync(login);
             if (streamer == null)
@@ -78,6 +88,7 @@ namespace TwitchTrackerUI
                 return;
             }
 
+            allHourlyViewersChart.Visibility = Visibility.Collapsed;
             spStreamerInfo.Visibility = Visibility.Visible;
 
             imgAvatar.Source = new BitmapImage(new Uri(streamer.Avatar));
@@ -107,12 +118,15 @@ namespace TwitchTrackerUI
                 txtStreamLanguage.Text = "";
             }
 
-            // --- Обновление статистики ---
             await UpdateCompletedStreamStatsAsync(streamer.StreamerId);
 
-            // --- Обновление графиков ---
             gamePieChart.SetStreamer(streamer.StreamerId);
             hourlyViewersChart.SetStreamer(streamer.StreamerId);
+        }
+
+        private async Task RefreshStreamerDataAsync(string login)
+        {
+            await ShowStreamerViewAsync(login);
         }
 
         private async Task UpdateCompletedStreamStatsAsync(string streamerId)

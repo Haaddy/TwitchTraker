@@ -14,7 +14,6 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
 
     public async Task AddSnapshotAsync(LiveStreamSnapshot snapshot)
     {
-        // Создаём папку, если её нет
         Directory.CreateDirectory(_basePath);
 
         var filePath = Path.Combine(_basePath, $"{snapshot.Login}.json");
@@ -38,7 +37,6 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
 
         log.Snapshots.Add(snapshot);
 
-        // Сохраняем JSON с сохранением русских букв
         var output = JsonSerializer.Serialize(log, new JsonSerializerOptions
         {
             WriteIndented = true,
@@ -48,6 +46,7 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
         await File.WriteAllTextAsync(filePath, output);
     }
 
+    // Существующий метод по StreamerId оставляем как есть
     public async Task<List<LiveStreamSnapshot>> GetSnapshotsAsync(
         string streamerId,
         DateTime? fromUtc = null,
@@ -78,6 +77,34 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
         return new();
     }
 
+    // Новый метод для графика по логину
+    public async Task<List<LiveStreamSnapshot>> GetSnapshotsByLoginAsync(
+        string login,
+        DateTime? fromUtc = null,
+        DateTime? toUtc = null)
+    {
+        if (!Directory.Exists(_basePath))
+            return new();
+
+        var filePath = Path.Combine(_basePath, $"{login}.json");
+        if (!File.Exists(filePath))
+            return new();
+
+        var json = await File.ReadAllTextAsync(filePath);
+        var log = JsonSerializer.Deserialize<LiveStreamerLog>(json);
+        if (log == null) return new();
+
+        var result = log.Snapshots.AsEnumerable();
+
+        if (fromUtc != null)
+            result = result.Where(s => s.TimestampUtc >= fromUtc);
+
+        if (toUtc != null)
+            result = result.Where(s => s.TimestampUtc <= toUtc);
+
+        return result.ToList();
+    }
+
     public Task<List<string>> GetTrackedStreamersAsync()
     {
         if (!Directory.Exists(_basePath))
@@ -89,4 +116,17 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
 
         return Task.FromResult(list);
     }
+
+    public Task<IEnumerable<string>> GetAllStreamersWithLogsAsync()
+    {
+        if (!Directory.Exists(_basePath))
+            return Task.FromResult(Enumerable.Empty<string>());
+
+        var list = Directory.GetFiles(_basePath, "*.json")
+            .Select(Path.GetFileNameWithoutExtension);
+
+        return Task.FromResult(list);
+    }
+
+    
 }

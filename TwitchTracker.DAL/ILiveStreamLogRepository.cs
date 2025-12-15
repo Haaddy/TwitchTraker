@@ -11,5 +11,12 @@ public interface ILiveStreamLogRepository
         DateTime? fromUtc = null,
         DateTime? toUtc = null);
 
+    Task<List<LiveStreamSnapshot>> GetSnapshotsByLoginAsync(
+        string login,
+        DateTime? fromUtc = null,
+        DateTime? toUtc = null);
+    
     Task<List<string>> GetTrackedStreamersAsync();
+    Task<IEnumerable<string>> GetAllStreamersWithLogsAsync();
+    
 }
