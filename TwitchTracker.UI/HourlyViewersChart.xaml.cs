@@ -29,7 +29,7 @@ namespace TwitchTrackerUI
             _timer.Tick += async (s, e) => await UpdateChartAsync();
         }
 
-        public void Initialize(ILiveStreamLogRepository logRepo)
+        public void Initialize(ILiveStreamLogRepository logRepo) //Привязываем репозиторий логов и создаём сервис истории стримов
         {
             _logRepo = logRepo;
             _historyService = new LiveStreamHistoryService(_logRepo);
@@ -47,26 +47,26 @@ namespace TwitchTrackerUI
             if (_logRepo == null || string.IsNullOrEmpty(_streamerId))
                 return;
 
-            var streams = await _historyService.GetStreamsAsync(_streamerId);
+            var streams = await _historyService.GetStreamsAsync(_streamerId); //Получаем все стримы данного стримера
 
             double[] avgViewersPerHour = new double[24];
             int[] countsPerHour = new int[24];
 
             foreach (var stream in streams)
             {
-                foreach (var snap in stream.Snapshots)
+                foreach (var snap in stream.Snapshots) //Проходим по всем стримам и снэпшотам
                 {
                     int hour = snap.TimestampUtc.Hour;
                     avgViewersPerHour[hour] += snap.Viewers;
-                    countsPerHour[hour]++;
+                    countsPerHour[hour]++; //Для каждого часа прибавляем количество зрителей к сумме и увеличиваем счётчик
                 }
             }
 
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < 24; i++) //Получаем средний онлайн по каждому часу
                 if (countsPerHour[i] > 0)
                     avgViewersPerHour[i] /= countsPerHour[i];
 
-            var plotModel = new PlotModel
+            var plotModel = new PlotModel //Создание модели графика
             {
                 Title = "",
                 Background = OxyColor.FromRgb(24, 24, 27), // совпадает с основным окном
@@ -74,8 +74,8 @@ namespace TwitchTrackerUI
                 PlotAreaBorderColor = OxyColors.Gray
             };
 
-            // Оси
-            plotModel.Axes.Add(new LinearAxis
+           
+            plotModel.Axes.Add(new LinearAxis //Настройка осей
             {
                 Position = AxisPosition.Left,
                 Title = "Средний онлайн",
@@ -107,7 +107,7 @@ namespace TwitchTrackerUI
             plotModel.Axes.Add(categoryAxis);
 
             // Линия
-            var lineSeries = new LineSeries
+            var lineSeries = new LineSeries //Создание линии графика
             {
                 Color = OxyColor.FromRgb(145, 70, 255), // пурпурная линия
                 MarkerType = MarkerType.Circle,

@@ -4,42 +4,45 @@
         xmlns:local="clr-namespace:TwitchTrackerUI"
         Title="Twitch Tracker" Height="900" Width="950"
         Background="#18181B" WindowStartupLocation="CenterScreen">
-
+    <!-- Основное окно приложения -->
+    
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/> <!-- Панель поиска -->
+            <RowDefinition Height="*"/>    <!-- Основной контент (графики и информация о стримере) -->
         </Grid.RowDefinitions>
 
-        <!-- Панель поиска -->
+        <!-- Панель поиска стримера -->
         <Border Grid.Row="0" CornerRadius="10" Background="#252526" Padding="10" HorizontalAlignment="Center" Margin="0,10">
             <StackPanel Orientation="Horizontal">
+                <!-- Поле ввода логина стримера -->
                 <TextBox x:Name="txtStreamerLogin" Width="250" Height="35"
                          Margin="0,0,10,0"
                          Background="#1E1E1E" Foreground="White" 
                          BorderBrush="#9146FF" BorderThickness="1"
                          Padding="5" FontSize="14" VerticalContentAlignment="Center"
                          CaretBrush="White"/>
+                <!-- Кнопка поиска -->
                 <Button x:Name="btnSearch" Content="Search" Width="100" Height="35"
                         Background="#9146FF" Foreground="White" BorderThickness="0" FontWeight="Bold"
                         Cursor="Hand"/>
+                <!-- Кнопка возврата на главную -->
                 <Button x:Name="btnHome" Content="Главная" Width="100" Height="35"
                         Background="#3C3C3C" Foreground="White" BorderThickness="0" FontWeight="Bold"
                         Margin="10,0,0,0" Cursor="Hand"/>
             </StackPanel>
         </Border>
 
-        <!-- Основной контент -->
+        <!-- Основной контент приложения -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,0,10,10">
             <StackPanel x:Name="MainContent" Orientation="Vertical">
 
-                <!-- Общий график -->
+                <!-- Глобальный график: средний онлайн по часам для всех стримеров -->
                 <local:AllHourlyViewersChart x:Name="allHourlyViewersChart" Height="400" Margin="0,10,0,15"/>
 
-                <!-- Карточка стримера -->
+                <!-- Карточка информации о конкретном стримере -->
                 <StackPanel x:Name="spStreamerInfo" Orientation="Vertical" Background="#252526" Margin="0,10" Visibility="Collapsed">
-
-                    <!-- Аватар и базовая информация -->
+                    <!-- Секция аватара и базовой информации -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                         <Image x:Name="imgAvatar" Width="80" Height="80" Margin="0,0,10,0" Stretch="UniformToFill" ClipToBounds="True"/>
                         <StackPanel Orientation="Vertical">
@@ -52,6 +55,7 @@
                     <!-- Блок текущего стрима -->
                     <Border x:Name="brdLiveStream" CornerRadius="8" Background="#3C3C3C" Padding="10">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Индикатор онлайн/оффлайн -->
                             <Ellipse x:Name="ellipseLive" Width="15" Height="15" Fill="Gray" VerticalAlignment="Center"/>
                             <StackPanel Margin="10,0,0,0">
                                 <TextBlock x:Name="txtStreamStatus" FontSize="16" FontWeight="Bold" Foreground="White"/>
@@ -63,27 +67,31 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Статистика -->
+                    <!-- Секция статистики по завершённым стримам -->
                     <TextBlock Text="Статистика по завершённым стримам" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,15,0,5"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                        <!-- Пиковый онлайн -->
                         <Border Background="#252526" Padding="10" CornerRadius="8" Width="120">
                             <StackPanel>
                                 <TextBlock Text="Пиковый онлайн" Foreground="LightGray" FontSize="12" TextAlignment="Center"/>
                                 <TextBlock x:Name="txtMaxViewers" Foreground="White" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
                             </StackPanel>
                         </Border>
+                        <!-- Среднее количество зрителей -->
                         <Border Background="#252526" Padding="10" CornerRadius="8" Width="120">
                             <StackPanel>
                                 <TextBlock Text="Средние зрители" Foreground="LightGray" FontSize="12" TextAlignment="Center"/>
                                 <TextBlock x:Name="txtAvgViewers" Foreground="White" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
                             </StackPanel>
                         </Border>
+                        <!-- Средняя длительность -->
                         <Border Background="#252526" Padding="10" CornerRadius="8" Width="120">
                             <StackPanel>
                                 <TextBlock Text="Средняя длительность" Foreground="LightGray" FontSize="12" TextAlignment="Center"/>
                                 <TextBlock x:Name="txtTotalDuration" Foreground="White" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
                             </StackPanel>
                         </Border>
+                        <!-- Количество стримов -->
                         <Border Background="#252526" Padding="10" CornerRadius="8" Width="120">
                             <StackPanel>
                                 <TextBlock Text="Кол-во стримов" Foreground="LightGray" FontSize="12" TextAlignment="Center"/>
@@ -92,10 +100,11 @@
                         </Border>
                     </StackPanel>
 
-                    <!-- Графики -->
+                    <!-- График доли игр по онлайну -->
                     <TextBlock Text="Доля игр по онлайну" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,10,0,5"/>
                     <local:GamePieChart x:Name="gamePieChart" Height="300" Margin="0,0,0,15"/>
 
+                    <!-- График среднего онлайна по часам -->
                     <TextBlock Text="Средний онлайн по часам" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,10,0,5"/>
                     <local:HourlyViewersChart x:Name="hourlyViewersChart" Height="300" Margin="0,0,0,15"/>
 

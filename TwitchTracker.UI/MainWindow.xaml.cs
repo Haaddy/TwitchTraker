@@ -24,8 +24,8 @@ namespace TwitchTrackerUI
         {
             InitializeComponent();
 
-            var host = Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
+            var host = Host.CreateDefaultBuilder() //Создаём хост приложения с DI
+                .ConfigureServices((context, services) =>// регимтрация сепвисов
                 {
                     services.AddSingleton<ITwitchServices>(_ => new TwitchServices(
                         "ob1bnuwy4yzi5mgjz4f4n7b24z53np",
@@ -38,8 +38,8 @@ namespace TwitchTrackerUI
                 })
                 .Build();
 
-            host.Start();
-
+            host.Start(); // запуск хоста
+            //Получаем зарегистрированные сервисы
             _stats = host.Services.GetRequiredService<StreamerStats>();
             _tracked = host.Services.GetRequiredService<TrackedStreamersService>();
             _logRepo = host.Services.GetRequiredService<ILiveStreamLogRepository>();
@@ -51,6 +51,7 @@ namespace TwitchTrackerUI
             gamePieChart.Initialize(_logRepo);
             hourlyViewersChart.Initialize(_logRepo);
 
+            //обработчики событий
             btnSearch.Click += BtnSearch_Click;
             btnHome.Click += BtnHome_Click;
 
@@ -64,7 +65,7 @@ namespace TwitchTrackerUI
             _timer.Start();
         }
 
-        private async void BtnSearch_Click(object sender, RoutedEventArgs e)
+        private async void BtnSearch_Click(object sender, RoutedEventArgs e) //Обработчик кнопки поиска:
         {
             string login = txtStreamerLogin.Text.Trim();
             if (string.IsNullOrEmpty(login)) return;
@@ -73,15 +74,15 @@ namespace TwitchTrackerUI
             await ShowStreamerViewAsync(login);
         }
 
-        private void BtnHome_Click(object sender, RoutedEventArgs e)
+        private void BtnHome_Click(object sender, RoutedEventArgs e) //Обработчик кнопки "Главная":
         {
             spStreamerInfo.Visibility = Visibility.Collapsed;
             allHourlyViewersChart.Visibility = Visibility.Visible;
         }
 
-        private async Task ShowStreamerViewAsync(string login)
+        private async Task ShowStreamerViewAsync(string login) //  Метод отображения данных стримера
         {
-            var streamer = await _stats.GetStreamerInfoAsync(login);
+            var streamer = await _stats.GetStreamerInfoAsync(login); //Получает информацию о стримере
             if (streamer == null)
             {
                 MessageBox.Show("Стример не найден.");
@@ -97,7 +98,7 @@ namespace TwitchTrackerUI
             txtBio.Text = streamer.Bio;
 
             var stream = await _stats.GetLiveStreamAsync(login);
-            if (stream.IsLive)
+            if (stream.IsLive) //Если стример онлайн
             {
                 brdLiveStream.Background = new SolidColorBrush(Color.FromRgb(145, 70, 255));
                 ellipseLive.Fill = new SolidColorBrush(Color.FromRgb(0, 255, 0));
@@ -118,25 +119,25 @@ namespace TwitchTrackerUI
                 txtStreamLanguage.Text = "";
             }
 
-            await UpdateCompletedStreamStatsAsync(streamer.StreamerId);
+            await UpdateCompletedStreamStatsAsync(streamer.StreamerId); //Обновляем статистику по завершённым стримам
 
             gamePieChart.SetStreamer(streamer.StreamerId);
             hourlyViewersChart.SetStreamer(streamer.StreamerId);
         }
 
-        private async Task RefreshStreamerDataAsync(string login)
+        private async Task RefreshStreamerDataAsync(string login)//Метод для таймера
         {
             await ShowStreamerViewAsync(login);
         }
 
-        private async Task UpdateCompletedStreamStatsAsync(string streamerId)
+        private async Task UpdateCompletedStreamStatsAsync(string streamerId) //Получаем историю завершённых стримов стримера из логов
         {
             var historyService = new LiveStreamHistoryService(_logRepo);
             var completedStreams = (await historyService.GetStreamsAsync(streamerId))
                 .Where(s => s.EndedAt < DateTime.UtcNow)
-                .ToList();
+                .ToList(); //берёт только те стримы, которые уже завершены
 
-            if (!completedStreams.Any())
+            if (!completedStreams.Any()) //Если стримов нет
             {
                 txtAvgViewers.Text = "-";
                 txtMaxViewers.Text = "-";

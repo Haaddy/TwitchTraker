@@ -1,6 +1,6 @@
 namespace TwitchTracker.Models;
 
-public class LoggedStream
+public class LoggedStream // собирает все снэпшоты  одного стрима в единый объект.
 {
     public string StreamId { get; set; } = string.Empty;
 

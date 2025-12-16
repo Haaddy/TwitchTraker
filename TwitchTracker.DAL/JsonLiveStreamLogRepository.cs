@@ -12,7 +12,7 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
         _basePath = basePath;
     }
 
-    public async Task AddSnapshotAsync(LiveStreamSnapshot snapshot)
+    public async Task AddSnapshotAsync(LiveStreamSnapshot snapshot) //Добавляет новый снимок стрима (LiveStreamSnapshot) в JSON-файл стримера.
     {
         Directory.CreateDirectory(_basePath);
 
@@ -46,7 +46,7 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
         await File.WriteAllTextAsync(filePath, output);
     }
 
-    // Существующий метод по StreamerId оставляем как есть
+    //Получает все снимки стримов конкретного стримера
     public async Task<List<LiveStreamSnapshot>> GetSnapshotsAsync(
         string streamerId,
         DateTime? fromUtc = null,
@@ -77,7 +77,7 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
         return new();
     }
 
-    // Новый метод для графика по логину
+    // Получает все снимки стримов конкретного стримера по логину
     public async Task<List<LiveStreamSnapshot>> GetSnapshotsByLoginAsync(
         string login,
         DateTime? fromUtc = null,
@@ -105,7 +105,7 @@ public class JsonLiveStreamLogRepository : ILiveStreamLogRepository
         return result.ToList();
     }
 
-    public Task<List<string>> GetTrackedStreamersAsync()
+    public Task<List<string>> GetTrackedStreamersAsync() //Возвращает список всех стримеров, за которыми ведётся логирование
     {
         if (!Directory.Exists(_basePath))
             return Task.FromResult(new List<string>());

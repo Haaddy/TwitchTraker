@@ -1,10 +1,10 @@
 namespace TwitchTracker.Services;
 
-public class TrackedStreamersService
+public class TrackedStreamersService //хранение списка стримеров, за которыми нужно следить,
 {
     private readonly HashSet<string> _logins = new(StringComparer.OrdinalIgnoreCase);
 
-    public IReadOnlyCollection<string> Streamers => _logins;
+    public IReadOnlyCollection<string> Streamers => _logins;  //можно только читать элементы, но нельзя добавлять или удалять напрямую.
 
     public bool Add(string login)
     {

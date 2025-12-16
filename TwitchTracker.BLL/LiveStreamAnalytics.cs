@@ -1,7 +1,7 @@
 using TwitchTracker.Models;
 
 namespace TwitchTracker.BLL;
-
+/// анализ данных о стримах на основе их логов
 public class LiveStreamAnalytics
 {
     /// Пиковый онлайн за всё время

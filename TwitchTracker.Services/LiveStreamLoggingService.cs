@@ -4,7 +4,7 @@ using TwitchTracker.Models;
 
 namespace TwitchTracker.Services;
 
-public class LiveStreamLoggingService : BackgroundService
+public class LiveStreamLoggingService : BackgroundService //автоматическое создание истории стримов,
 {
     private readonly ITwitchServices _twitchServices;
     private readonly ILiveStreamLogRepository _repository;
@@ -22,7 +22,7 @@ public class LiveStreamLoggingService : BackgroundService
         _trackedStreamers = trackedStreamers;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken) //Основной метод фоновой службы.
     {
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -42,7 +42,7 @@ public class LiveStreamLoggingService : BackgroundService
         }
     }
 
-    private async Task LogStreamerAsync(string login)
+    private async Task LogStreamerAsync(string login) // Логика создания снэпшота текущего состояния стрима:
     {
         var streamer = await _twitchServices.GetStreamerAsync(login);
         if (streamer == null) return;
@@ -68,18 +68,18 @@ public class LiveStreamLoggingService : BackgroundService
             Language = stream.Language
         };
 
-        // Условие 1: если оффлайн и последний снэпшот тоже оффлайн → пропускаем
+        // если оффлайн и последний снэпшот тоже оффлайн → пропускаем
         if (!snapshot.IsLive && lastSnapshot?.IsLive == false)
             return;
 
-        // Условие 2: если данные не изменились → пропускаем
+        //  если данные не изменились → пропускаем
         if (lastSnapshot != null && AreSnapshotsEqual(lastSnapshot, snapshot))
             return;
 
         await _repository.AddSnapshotAsync(snapshot);
     }
 
-    private bool AreSnapshotsEqual(LiveStreamSnapshot oldSnap, LiveStreamSnapshot newSnap)
+    private bool AreSnapshotsEqual(LiveStreamSnapshot oldSnap, LiveStreamSnapshot newSnap) //Сравнивает два снэпшота по ключевым полям
     {
         return oldSnap.IsLive == newSnap.IsLive
                && oldSnap.Viewers == newSnap.Viewers

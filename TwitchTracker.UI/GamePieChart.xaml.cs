@@ -46,21 +46,21 @@ namespace TwitchTrackerUI
             if (_logRepo == null || string.IsNullOrEmpty(_streamerId))
                 return;
 
-            var streams = await _historyService.GetStreamsAsync(_streamerId);
+            var streams = await _historyService.GetStreamsAsync(_streamerId); //Получаем все стримы данного стримера из истории.
 
             var gameStats = streams
-                .SelectMany(s => s.Snapshots)
-                .Where(s => !string.IsNullOrEmpty(s.GameName))
-                .GroupBy(s => s.GameName)
+                .SelectMany(s => s.Snapshots) //объединяет все снэпшоты из всех стримов в один список
+                .Where(s => !string.IsNullOrEmpty(s.GameName))//убирает пустые игры.
+                .GroupBy(s => s.GameName)//группируем по названию игры.
                 .Select(g => new
                 {
                     Game = g.Key,
-                    AverageViewers = g.Average(s => s.Viewers)
+                    AverageViewers = g.Average(s => s.Viewers) //считаем средний онлайн по каждой игре.
                 })
-                .OrderByDescending(x => x.AverageViewers)
+                .OrderByDescending(x => x.AverageViewers)//сортируем игры по убыванию среднего онлайн
                 .ToList();
 
-            var plotModel = new PlotModel
+            var plotModel = new PlotModel //это контейнер всей визуализации
             {
                 Title = "",
                 Background = OxyColor.FromRgb(24, 24, 27), // совпадает с окном
@@ -80,7 +80,7 @@ namespace TwitchTrackerUI
                 TickRadialLength = 0
             };
 
-            foreach (var game in gameStats)
+            foreach (var game in gameStats) //Добавление срезов диаграммы
             {
                 var random = new Random(game.Game.GetHashCode());
                 var fill = OxyColor.FromRgb(

@@ -1,6 +1,6 @@
 namespace TwitchTracker.Models;
 
-public class LiveStreamSnapshot
+public class LiveStreamSnapshot //представляет снимок состояния стрима
 {
     public DateTime TimestampUtc { get; set; }
 

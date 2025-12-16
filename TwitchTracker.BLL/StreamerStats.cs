@@ -36,14 +36,14 @@ public class StreamerStats
         return await _vodStreams.GetLastStreamsAsync(streamerId, count);
     }
 
-    // --- Методы статистики по завершённым стримам ---
+    //  Методы статистики по завершённым стримам 
 
-    private async Task<List<LoggedStream>> GetLoggedStreamsAsync(string streamerId)
+    private async Task<List<LoggedStream>> GetLoggedStreamsAsync(string streamerId) //Получает список всех завершённых стримов стримера из истории
     {
         return await _historyService.GetStreamsAsync(streamerId);
     }
 
-    public async Task<long> GetMaxViewersAsync(string streamerId, int lastNStreams = 0)
+    public async Task<long> GetMaxViewersAsync(string streamerId, int lastNStreams = 0) //озвращает максимальный пиковый онлайн среди всех стримов или последних lastNStreams
     {
         var streams = await GetLoggedStreamsAsync(streamerId);
         if (lastNStreams > 0)
@@ -52,7 +52,7 @@ public class StreamerStats
         return streams.Any() ? streams.Max(s => s.PeakViewers) : 0;
     }
 
-    public async Task<long> GetAverageViewersAsync(string streamerId, int lastNStreams = 0)
+    public async Task<long> GetAverageViewersAsync(string streamerId, int lastNStreams = 0) //Вычисляет средний онлайн за все или последние N стримов.
     {
         var streams = await GetLoggedStreamsAsync(streamerId);
         if (lastNStreams > 0)
@@ -61,7 +61,7 @@ public class StreamerStats
         return streams.Any() ? (long)streams.Average(s => s.AverageViewers) : 0;
     }
 
-    public async Task<TimeSpan> GetTotalDurationAsync(string streamerId, int lastNStreams = 0)
+    public async Task<TimeSpan> GetTotalDurationAsync(string streamerId, int lastNStreams = 0) //Считает суммарную длительность всех или последних N стримов
     {
         var streams = await GetLoggedStreamsAsync(streamerId);
         if (lastNStreams > 0)
@@ -70,7 +70,7 @@ public class StreamerStats
         return streams.Aggregate(TimeSpan.Zero, (sum, s) => sum + s.Duration);
     }
 
-    public async Task<int> GetStreamCountAsync(string streamerId, int lastNStreams = 0)
+    public async Task<int> GetStreamCountAsync(string streamerId, int lastNStreams = 0) //озвращает количество стримов всего или последних N.
     {
         var streams = await GetLoggedStreamsAsync(streamerId);
         if (lastNStreams > 0)
